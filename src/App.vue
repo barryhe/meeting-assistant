@@ -197,7 +197,7 @@
     margin-left: auto;
     margin-right: auto;
     margin-top: 150px;
-    margin-bottom: 200px;
+    margin-bottom: 400px;
     word-break: break-all;
 
     color: white;
