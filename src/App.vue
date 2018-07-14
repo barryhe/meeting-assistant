@@ -127,9 +127,9 @@
                 var analyser = context.createAnalyser();
                 var source;
                 this.beeper = new Audio(this.pathGenerator());
-                // this.beeper.controls = true;
+                this.beeper.controls = true;
                 this.beeper.loop = true;
-                this.audio.crossOrigin = "anonymous";
+                // this.audio.crossOrigin = "anonymous";
 
 
                 source = context.createMediaElementSource(this.beeper);
