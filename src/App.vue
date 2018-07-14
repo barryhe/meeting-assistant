@@ -55,11 +55,11 @@
 
                 startMadness: false,
                 madnessPrev: 0,
-                madnessMaxDuration: 1000, // 1s
+                madnessMaxDuration: 800, // ms
 
                 startPeace: false,
                 peacePrev: 0,
-                peaceMaxDuration: 500, // 0.3s
+                peaceMaxDuration: 800, // ms
 
                 beeper_switch: true,
             };
