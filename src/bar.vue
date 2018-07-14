@@ -1,5 +1,5 @@
 <template>
-    <div class="bar" v-bind:style="{ 'background-color': activeColor, height:hh}"></div>
+    <div class="bar" v-bind:style="{'background-color': activeColor}"></div>
 </template>
 
 <script>

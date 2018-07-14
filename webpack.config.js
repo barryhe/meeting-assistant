@@ -2,10 +2,10 @@ var path = require('path');
 var webpack = require('webpack');
 
 module.exports = {
-    entry: './src/main.js',
+    entry: ['./src/main.js'],
     output: {
-        path: path.resolve(__dirname, './dist'),
-        publicPath: './dist/',
+        path: path.resolve(__dirname, 'dist'),
+        publicPath: '/dist/',
         filename: 'build.js',
     },
     module: {
@@ -40,8 +40,12 @@ module.exports = {
         historyApiFallback: true,
         noInfo: true
     },
-    devtool: '#eval-source-map'
-}
+    devtool: '#eval-source-map',
+    watchOptions: {
+        aggregateTimeout: 300,
+        poll: 1000
+    }
+};
 
 if (process.env.NODE_ENV === 'production') {
     module.exports.devtool = '#source-map';

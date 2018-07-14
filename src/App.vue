@@ -37,11 +37,10 @@
     import Bar from "./bar.vue";
     import volumeMeter from 'volume-meter';
     import getusermedia from 'getusermedia';
-
-    import Mint from 'mint-ui';
+    import element from 'element-ui';
 
     export default {
-        components: {Bar, Mint, volumeMeter},
+        components: {Bar, element, volumeMeter},
         name: 'app',
         data () {
             return {
@@ -130,13 +129,14 @@
                 this.beeper.controls = true;
                 this.beeper.loop = true;
 
-
                 source = context.createMediaElementSource(this.beeper);
                 source.connect(analyser);
                 analyser.connect(context.destination);
                 /* end of beeper */
             },
             updateBars(volume) {
+                // console.log("TESTING!");
+                // console.log("FINE!");
                 let time = (new Date()).getTime();
 
                 if (volume > this.threshold) {
@@ -151,8 +151,8 @@
                     // two solutions:
                     // 1. beep after 0.3s of madness
                     // 2. beep if volume > threshold
-                    this.startMadness = false;
-                    this.stopBeeper();
+                    // this.startMadness = false;
+                    // this.stopBeeper();
                 }
 
                 if (time - this.prev >= this.toWait) {
@@ -183,7 +183,8 @@
                 }
             },
             playBeeper() {
-                if (this.beeper_switch && !this.beeper) {
+                if (this.beeper_switch) {
+                    console.log("HERE!");
                     this.beeper.play();
                 }
             },
