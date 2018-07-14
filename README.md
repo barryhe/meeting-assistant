@@ -1,6 +1,6 @@
 # meeting-assistant
 
-***Volume bars***
+***Volume bars***  
 白色的音量显示器，图像化音量大小。当音量超过警示音时，音量条会变成红色。
 
 ***Basic Setup Panel***  
