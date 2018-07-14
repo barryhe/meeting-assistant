@@ -10965,9 +10965,11 @@ module.exports = function normalizeComponent (
         return {
             num: 20, // number of bars
             factor: 5,
-            threshold: 50,
+            threshold: 15,
             prev: 0,
             toWait: 50, // milliseconds
+            min: 10,
+            max: 100,
 
             beeper_switch: true
         };
@@ -10977,7 +10979,7 @@ module.exports = function normalizeComponent (
     },
     methods: {
         pathGenerator() {
-            return "/dist/music/" + this.song + ".mp3";
+            return "/dist/beep.mp3";
         },
         setup: function () {
             this.prev = new Date().getTime();
@@ -11060,18 +11062,20 @@ module.exports = function normalizeComponent (
             }
         },
         disableWarning() {
-            console.log("here");
+            this.beeper_switch = !this.beeper_switch;
         },
-        reverseData() {
-            let x = this.mData.slice().reverse();
-            return x;
-        },
-        playAnother() {},
         change() {
             for (let b = 0; b < this.num; ++b) {
                 // this.refs.bar guaranteed to be an array
                 this.$refs.bar[b].change();
             }
+        }, checkThreshold() {
+            if (this.threshold < this.min) {
+                this.threshold = this.min;
+            } else if (this.threshold > this.max) {
+                this.threshold = this.max;
+            }
+            console.log(this.threshold);
         }
     },
     mounted() {}
@@ -13212,7 +13216,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_App_vue__ = __webpack_require__(48);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_931117b4_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__ = __webpack_require__(100);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_1cf71117_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__ = __webpack_require__(100);
 function injectStyle (ssrContext) {
   __webpack_require__(76)
 }
@@ -13232,7 +13236,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_App_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_931117b4_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_1cf71117_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -13253,7 +13257,7 @@ var content = __webpack_require__(77);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(46)("0e5c0480", content, true, {});
+var update = __webpack_require__(46)("f7e5e62e", content, true, {});
 
 /***/ }),
 /* 77 */
@@ -26399,7 +26403,7 @@ module.exports = function (arr, predicate, ctx) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{attrs:{"id":"app"}},[_c('div',{staticClass:"disable-doubletap-to-zoom",attrs:{"id":"background"}},[_c('div',{attrs:{"id":"container"}},[_c('div',{attrs:{"id":"bars_container"}},_vm._l((_vm.num),function(i){return _c('bar',{ref:"bar",refInFor:true})})),_vm._v(" "),_c('div',{attrs:{"id":"basic_setup"}},[_c('h3',{staticClass:"show_text"},[_vm._v("Basic Setup")]),_vm._v(" "),_c('hr'),_vm._v(" "),_c('div',{staticClass:"item"},[_c('span',{staticClass:"show_text"},[_vm._v("Threshold: ")]),_vm._v(" "),[_c('el-input-number',{attrs:{"step":5,"min":"10","max":"100"},model:{value:(_vm.threshold),callback:function ($$v) {_vm.threshold=$$v},expression:"threshold"}})]],2),_vm._v(" "),_c('div',{staticClass:"item"},[_c('span',{staticClass:"show_text"},[_vm._v("Warning: ")]),_vm._v(" "),_c('label',{staticClass:"switch"},[_c('input',{attrs:{"type":"checkbox","checked":""},on:{"click":function($event){_vm.disableWarning();}}}),_vm._v(" "),_c('span',{staticClass:"slider round"})])])])])])])}
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{attrs:{"id":"app"}},[_c('div',{staticClass:"disable-doubletap-to-zoom",attrs:{"id":"background"}},[_c('div',{attrs:{"id":"container"}},[_c('div',{attrs:{"id":"bars_container"}},_vm._l((_vm.num),function(i){return _c('bar',{ref:"bar",refInFor:true})})),_vm._v(" "),_c('div',{attrs:{"id":"basic_setup"}},[_c('h3',{staticClass:"show_text"},[_vm._v("Basic Setup")]),_vm._v(" "),_c('hr'),_vm._v(" "),_c('div',{staticClass:"item",on:{"click":function($event){_vm.checkThreshold();}}},[_c('span',{staticClass:"show_text"},[_vm._v("Threshold: ")]),_vm._v(" "),[_c('el-input-number',{attrs:{"step":_vm.factor},model:{value:(_vm.threshold),callback:function ($$v) {_vm.threshold=$$v},expression:"threshold"}})]],2),_vm._v(" "),_c('div',{staticClass:"item"},[_c('span',{staticClass:"show_text"},[_vm._v("Warning: ")]),_vm._v(" "),_c('label',{staticClass:"switch"},[_c('input',{attrs:{"type":"checkbox","checked":""},on:{"click":function($event){_vm.disableWarning();}}}),_vm._v(" "),_c('span',{staticClass:"slider round"})])])])])])])}
 var staticRenderFns = []
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);

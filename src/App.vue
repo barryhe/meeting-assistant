@@ -12,10 +12,10 @@
             <h3 class="show_text">Basic Setup</h3>
             <hr>
 
-            <div class="item">
+            <div class="item" v-on:click="checkThreshold();">
                 <span class="show_text">Threshold: </span>
                   <template>
-                      <el-input-number v-model="threshold" :step="5" min="10" max="100" ></el-input-number>
+                      <el-input-number v-model="threshold" :step="factor"></el-input-number>
                   </template>
             </div>
             <div class="item">
@@ -47,9 +47,11 @@
             return {
                 num: 20,      // number of bars
                 factor: 5,
-                threshold: 50,
+                threshold: 15,
                 prev: 0,
                 toWait: 50, // milliseconds
+                min: 10,
+                max: 100,
 
                 beeper_switch: true,
             };
@@ -59,7 +61,7 @@
         },
         methods: {
             pathGenerator () {
-                return "/dist/music/" + this.song + ".mp3";
+                return "/dist/beep.mp3";
             },
             setup: function() {
                 this.prev = (new Date()).getTime();
@@ -142,20 +144,20 @@
                 }
             },
             disableWarning() {
-                console.log("here");
-            },
-            reverseData() {
-                let x = this.mData.slice().reverse();
-                return x;
-            },
-            playAnother () {
-
+                this.beeper_switch = !this.beeper_switch;
             },
             change() {
                 for (let b = 0; b < this.num; ++b) {
                     // this.refs.bar guaranteed to be an array
                     this.$refs.bar[b].change();
                 }
+            }, checkThreshold() {
+                if (this.threshold < this.min) {
+                    this.threshold = this.min;
+                } else if (this.threshold > this.max) {
+                    this.threshold = this.max;
+                }
+                console.log(this.threshold);
             }
         },
         mounted() {
