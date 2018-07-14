@@ -10968,8 +10968,13 @@ module.exports = function normalizeComponent (
             threshold: 15,
             prev: 0,
             toWait: 50, // milliseconds
-            min: 10,
+            min: 0,
             max: 100,
+            beeper: null,
+
+            startMadness: false,
+            madnessPrev: 0,
+            madnessMaxDuration: 1000, // 1s (roughly)
 
             beeper_switch: true
         };
@@ -10984,6 +10989,7 @@ module.exports = function normalizeComponent (
         setup: function () {
             this.prev = new Date().getTime();
 
+            /* start recording */
             var self = this;
             if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
                 console.log('getUserMedia supported.');
@@ -11007,8 +11013,9 @@ module.exports = function normalizeComponent (
             } else {
                 console.log('getUserMedia not supported on your browser!');
             }
+            /* end of recording */
 
-            // double click disable
+            /* disable zoom by double click */
             var lastTouch = 0;
             function preventZoom(e) {
                 var t2 = e.timeStamp;
@@ -11030,9 +11037,41 @@ module.exports = function normalizeComponent (
 
             document.addEventListener('touchstart', preventZoom, false);
             document.addEventListener('touchmove', resetPreventZoom, false);
+            /* end of double click */
+
+            /* start of beeper setup */
+            window.AudioContext = window.AudioContext || window.webkitAudioContext;
+            var context = new AudioContext();
+            var analyser = context.createAnalyser();
+            var source;
+            this.beeper = new Audio(this.pathGenerator());
+            // this.beeper.controls = true;
+            this.beeper.loop = true;
+            this.audio.crossOrigin = "anonymous";
+
+            source = context.createMediaElementSource(this.beeper);
+            source.connect(analyser);
+            analyser.connect(context.destination);
+            /* end of beeper */
         },
         updateBars(volume) {
             let time = new Date().getTime();
+
+            if (volume > this.threshold) {
+                if (!this.startMadness) {
+                    // exceed the maximum time
+                    this.startMadness = true;
+                    this.madnessPrev = time;
+                } else if (time - this.madnessPrev > this.madnessMaxDuration) {
+                    this.playBeeper();
+                }
+            } else {
+                // two solutions:
+                // 1. beep after 0.3s of madness
+                // 2. beep if volume > threshold
+                this.startMadness = false;
+                this.stopBeeper();
+            }
 
             if (time - this.prev >= this.toWait) {
                 this.prev = time;
@@ -11061,6 +11100,17 @@ module.exports = function normalizeComponent (
                 }
             }
         },
+        playBeeper() {
+            if (this.beeper_switch && !this.beeper) {
+                this.beeper.play();
+            }
+        },
+        stopBeeper() {
+            if (!this.beeper) {
+                this.beeper.pause();
+                this.beeper.currentTime = 0;
+            }
+        },
         disableWarning() {
             this.beeper_switch = !this.beeper_switch;
         },
@@ -11075,7 +11125,6 @@ module.exports = function normalizeComponent (
             } else if (this.threshold > this.max) {
                 this.threshold = this.max;
             }
-            console.log(this.threshold);
         }
     },
     mounted() {}
@@ -13216,7 +13265,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_App_vue__ = __webpack_require__(48);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_1cf71117_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__ = __webpack_require__(100);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_62ad97ed_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__ = __webpack_require__(100);
 function injectStyle (ssrContext) {
   __webpack_require__(76)
 }
@@ -13236,7 +13285,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_App_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_1cf71117_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_62ad97ed_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -13257,7 +13306,7 @@ var content = __webpack_require__(77);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(46)("f7e5e62e", content, true, {});
+var update = __webpack_require__(46)("3d79bed6", content, true, {});
 
 /***/ }),
 /* 77 */

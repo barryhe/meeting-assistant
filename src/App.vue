@@ -50,8 +50,13 @@
                 threshold: 15,
                 prev: 0,
                 toWait: 50, // milliseconds
-                min: 10,
+                min: 0,
                 max: 100,
+                beeper: null,
+
+                startMadness: false,
+                madnessPrev: 0,
+                madnessMaxDuration: 1000, // 1s (roughly)
 
                 beeper_switch: true,
             };
@@ -66,6 +71,7 @@
             setup: function() {
                 this.prev = (new Date()).getTime();
 
+                /* start recording */
                 var self = this;
                 if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
                     console.log('getUserMedia supported.');
@@ -83,14 +89,15 @@
                         src.connect(ctx.createGain());
 
                         stream.onended = function () {
-                            meter.stop()
+                            meter.stop();
                         }
                     });
                 } else {
                     console.log('getUserMedia not supported on your browser!');
                 }
+                /* end of recording */
 
-                // double click disable
+                /* disable zoom by double click */
                 var lastTouch = 0;
                 function preventZoom(e) {
                     var t2 = e.timeStamp;
@@ -112,9 +119,42 @@
 
                 document.addEventListener('touchstart', preventZoom, false);
                 document.addEventListener('touchmove', resetPreventZoom, false);
+                /* end of double click */
+
+                /* start of beeper setup */
+                window.AudioContext = window.AudioContext || window.webkitAudioContext;
+                var context = new AudioContext();
+                var analyser = context.createAnalyser();
+                var source;
+                this.beeper = new Audio(this.pathGenerator());
+                // this.beeper.controls = true;
+                this.beeper.loop = true;
+                this.audio.crossOrigin = "anonymous";
+
+
+                source = context.createMediaElementSource(this.beeper);
+                source.connect(analyser);
+                analyser.connect(context.destination);
+                /* end of beeper */
             },
             updateBars(volume) {
                 let time = (new Date()).getTime();
+
+                if (volume > this.threshold) {
+                    if (!this.startMadness) {
+                        // exceed the maximum time
+                        this.startMadness = true;
+                        this.madnessPrev = time;
+                    } else if (time - this.madnessPrev > this.madnessMaxDuration) {
+                        this.playBeeper();
+                    }
+                } else {
+                    // two solutions:
+                    // 1. beep after 0.3s of madness
+                    // 2. beep if volume > threshold
+                    this.startMadness = false;
+                    this.stopBeeper();
+                }
 
                 if (time - this.prev >= this.toWait) {
                     this.prev = time;
@@ -143,6 +183,17 @@
                     }
                 }
             },
+            playBeeper() {
+                if (this.beeper_switch && !this.beeper) {
+                    this.beeper.play();
+                }
+            },
+            stopBeeper() {
+                if (!this.beeper) {
+                    this.beeper.pause();
+                    this.beeper.currentTime = 0;
+                }
+            },
             disableWarning() {
                 this.beeper_switch = !this.beeper_switch;
             },
@@ -157,7 +208,6 @@
                 } else if (this.threshold > this.max) {
                     this.threshold = this.max;
                 }
-                console.log(this.threshold);
             }
         },
         mounted() {
