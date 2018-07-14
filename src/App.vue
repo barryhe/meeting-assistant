@@ -135,8 +135,6 @@
                 /* end of beeper */
             },
             updateBars(volume) {
-                // console.log("TESTING!");
-                // console.log("FINE!");
                 let time = (new Date()).getTime();
 
                 if (volume > this.threshold) {
@@ -151,8 +149,8 @@
                     // two solutions:
                     // 1. beep after 0.3s of madness
                     // 2. beep if volume > threshold
-                    // this.startMadness = false;
-                    // this.stopBeeper();
+                    this.startMadness = false;
+                    this.stopBeeper();
                 }
 
                 if (time - this.prev >= this.toWait) {
@@ -184,12 +182,11 @@
             },
             playBeeper() {
                 if (this.beeper_switch) {
-                    console.log("HERE!");
                     this.beeper.play();
                 }
             },
             stopBeeper() {
-                if (!this.beeper) {
+                if (this.beeper !== null) {
                     this.beeper.pause();
                     this.beeper.currentTime = 0;
                 }
