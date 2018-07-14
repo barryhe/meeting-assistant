@@ -24,7 +24,15 @@
                     <input type="checkbox" checked v-on:click="disableWarning();">
                     <span class="slider round"></span>
                 </label>
-          </div>
+            </div>
+
+            <div class="item">
+              <span class="show_text">Trigger Mode: </span>
+              <label class="switch">
+                  <input type="checkbox" checked v-on:click="switchMode();">
+                  <span class="slider round"></span>
+              </label>
+            </div>
         </div>
       </div>
     </div>
@@ -46,22 +54,30 @@
             return {
                 num: 20,      // number of bars
                 factor: 5,
-                threshold: 15,
+                threshold: 50,
                 prev: 0,
                 toWait: 50, // milliseconds
                 min: 0,
                 max: 100,
                 beeper: null,
 
+                /* trigger mode setup */
                 startMadness: false,
                 madnessPrev: 0,
-                madnessMaxDuration: 800, // ms
+                madnessMaxDuration: 300, // ms
 
                 startPeace: false,
                 peacePrev: 0,
-                peaceMaxDuration: 800, // ms
+                peaceMaxDuration: 1500, // ms
 
+                isTriggerMode: true,
+                /* end of trigger mode */
+
+                // enable/disable beeper
                 beeper_switch: true,
+
+                // switch to polynomial mode
+                initial_poly_factor: 100,
             };
         },
         created: function () {
@@ -141,31 +157,35 @@
             updateBars(volume) {
                 let time = (new Date()).getTime();
 
-                if (volume > this.threshold) {
-                    if (!this.startMadness) {
-                        // exceed the maximum time
-                        this.startMadness = true;
-                        this.madnessPrev = time;
-                    } else if (time - this.madnessPrev > this.madnessMaxDuration) {
-                        this.playBeeper();
-                    }
-                } else {
-                    // two solutions:
-                    // 1. beep after 0.3s of madness
-                    // 2. beep if volume > threshold
-
-                    if (!this.startPeace) {
-                        this.startPeace = true;
-                        this.peacePrev = time;
+                // beeper triggering
+                if (this.isTriggerMode) {
+                    if (volume > this.threshold) {
+                        if (!this.startMadness) {
+                            // exceed the maximum time
+                            this.startMadness = true;
+                            this.madnessPrev = time;
+                        } else if (time - this.madnessPrev > this.madnessMaxDuration) {
+                            this.playBeeper();
+                        }
                     } else {
-                        if (time - this.peacePrev > this.peaceMaxDuration) {
-                            this.startPeace = false;
-                            this.startMadness = false;
-                            this.stopBeeper();
+                        // two solutions:
+                        // 1. beep after 0.3s of madness
+                        // 2. beep if volume > threshold
+
+                        if (!this.startPeace) {
+                            this.startPeace = true;
+                            this.peacePrev = time;
+                        } else {
+                            if (time - this.peacePrev > this.peaceMaxDuration) {
+                                this.startPeace = false;
+                                this.startMadness = false;
+                                this.stopBeeper();
+                            }
                         }
                     }
                 }
 
+                // volume meter rendering
                 if (time - this.prev >= this.toWait) {
                     this.prev = time;
                     // update
@@ -218,6 +238,8 @@
                 } else if (this.threshold > this.max) {
                     this.threshold = this.max;
                 }
+            }, switchMode() {
+                this.isTriggerMode = !this.isTriggerMode;
             }
         },
         mounted() {
