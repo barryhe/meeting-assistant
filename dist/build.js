@@ -10950,6 +10950,14 @@ module.exports = function normalizeComponent (
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -10964,22 +10972,31 @@ module.exports = function normalizeComponent (
         return {
             num: 20, // number of bars
             factor: 5,
-            threshold: 15,
+            threshold: 35,
             prev: 0,
             toWait: 50, // milliseconds
             min: 0,
             max: 100,
             beeper: null,
+            beeperGain: null,
 
+            /* trigger mode setup */
             startMadness: false,
             madnessPrev: 0,
-            madnessMaxDuration: 1000, // 1s
+            madnessMaxDuration: 300, // ms
 
             startPeace: false,
             peacePrev: 0,
-            peaceMaxDuration: 500, // 0.3s
+            peaceMaxDuration: 1500, // ms
 
-            beeper_switch: true
+            isTriggerMode: false,
+            /* end of trigger mode */
+
+            // enable/disable beeper
+            beeper_switch: true,
+
+            // switch to polynomial mode
+            smoothing_factor: 1000.0
         };
     },
     created: function () {
@@ -10992,7 +11009,7 @@ module.exports = function normalizeComponent (
         setup: function () {
             this.prev = new Date().getTime();
 
-            /* start recording */
+            /* start mic setup */
             var self = this;
             if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
                 console.log('getUserMedia supported.');
@@ -11045,45 +11062,62 @@ module.exports = function normalizeComponent (
             /* start of beeper setup */
             window.AudioContext = window.AudioContext || window.webkitAudioContext;
             var context = new AudioContext();
-            var analyser = context.createAnalyser();
+            // var analyser = context.createAnalyser();
             var source;
+            self.beeperGain = context.createGain();
             this.beeper = new Audio(this.pathGenerator());
             this.beeper.controls = true;
             this.beeper.loop = true;
 
             source = context.createMediaElementSource(this.beeper);
-            source.connect(analyser);
-            analyser.connect(context.destination);
+            source.connect(self.beeperGain);
+            self.beeperGain.connect(context.destination);
             /* end of beeper */
         },
         updateBars(volume) {
             let time = new Date().getTime();
 
-            if (volume > this.threshold) {
-                if (!this.startMadness) {
-                    // exceed the maximum time
-                    this.startMadness = true;
-                    this.madnessPrev = time;
-                } else if (time - this.madnessPrev > this.madnessMaxDuration) {
-                    this.playBeeper();
+            // beeper triggering
+            if (this.isTriggerMode) {
+                if (volume > this.threshold) {
+                    if (!this.startMadness) {
+                        // exceed the maximum time
+                        this.startMadness = true;
+                        this.madnessPrev = time;
+                    } else if (time - this.madnessPrev > this.madnessMaxDuration) {
+                        this.playBeeper();
+                    }
+                } else {
+                    // two solutions:
+                    // 1. beep after 0.3s of madness
+                    // 2. beep if volume > threshold
+
+                    if (!this.startPeace) {
+                        this.startPeace = true;
+                        this.peacePrev = time;
+                    } else {
+                        if (time - this.peacePrev > this.peaceMaxDuration) {
+                            this.startPeace = false;
+                            this.startMadness = false;
+                            this.stopBeeper();
+                        }
+                    }
                 }
             } else {
-                // two solutions:
-                // 1. beep after 0.3s of madness
-                // 2. beep if volume > threshold
-
-                if (!this.startPeace) {
-                    this.startPeace = true;
-                    this.peacePrev = time;
+                // smooth mode
+                if (volume > this.threshold) {
+                    let diff = volume - this.threshold;
+                    let newVal = Math.pow(diff, 1.3) / this.smoothing_factor;
+                    console.log(newVal);
+                    this.beeperGain.gain.value = newVal;
+                    // this.beeperGain.gain.setTargetAtTime(0.5, this.beeper.currentTime, 0);
+                    this.playBeeper();
                 } else {
-                    if (time - this.peacePrev > this.peaceMaxDuration) {
-                        this.startPeace = false;
-                        this.startMadness = false;
-                        this.stopBeeper();
-                    }
+                    this.stopBeeper();
                 }
             }
 
+            // volume meter rendering
             if (time - this.prev >= this.toWait) {
                 this.prev = time;
                 // update
@@ -11136,6 +11170,8 @@ module.exports = function normalizeComponent (
             } else if (this.threshold > this.max) {
                 this.threshold = this.max;
             }
+        }, switchMode() {
+            this.isTriggerMode = !this.isTriggerMode;
         }
     },
     mounted() {}
@@ -41522,7 +41558,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_App_vue__ = __webpack_require__(48);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_6c0cd951_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__ = __webpack_require__(171);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_49432804_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__ = __webpack_require__(171);
 function injectStyle (ssrContext) {
   __webpack_require__(78)
 }
@@ -41542,7 +41578,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_App_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_6c0cd951_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_49432804_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -41563,7 +41599,7 @@ var content = __webpack_require__(79);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(46)("4934bb81", content, true, {});
+var update = __webpack_require__(46)("df6da1b8", content, true, {});
 
 /***/ }),
 /* 79 */
@@ -53373,7 +53409,7 @@ function isDef(val) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{attrs:{"id":"app"}},[_c('div',{staticClass:"disable-doubletap-to-zoom",attrs:{"id":"background"}},[_c('div',{attrs:{"id":"container"}},[_c('div',{attrs:{"id":"bars_container"}},_vm._l((_vm.num),function(i){return _c('bar',{ref:"bar",refInFor:true})})),_vm._v(" "),_c('div',{attrs:{"id":"basic_setup"}},[_c('h3',{staticClass:"show_text"},[_vm._v("Basic Setup")]),_vm._v(" "),_c('hr'),_vm._v(" "),_c('div',{staticClass:"item",on:{"click":function($event){_vm.checkThreshold();}}},[_c('span',{staticClass:"show_text"},[_vm._v("Threshold: ")]),_vm._v(" "),[_c('el-input-number',{attrs:{"step":_vm.factor},model:{value:(_vm.threshold),callback:function ($$v) {_vm.threshold=$$v},expression:"threshold"}})]],2),_vm._v(" "),_c('div',{staticClass:"item"},[_c('span',{staticClass:"show_text"},[_vm._v("Warning: ")]),_vm._v(" "),_c('label',{staticClass:"switch"},[_c('input',{attrs:{"type":"checkbox","checked":""},on:{"click":function($event){_vm.disableWarning();}}}),_vm._v(" "),_c('span',{staticClass:"slider round"})])])])])])])}
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{attrs:{"id":"app"}},[_c('div',{staticClass:"disable-doubletap-to-zoom",attrs:{"id":"background"}},[_c('div',{attrs:{"id":"container"}},[_c('div',{attrs:{"id":"bars_container"}},_vm._l((_vm.num),function(i){return _c('bar',{ref:"bar",refInFor:true})})),_vm._v(" "),_c('div',{attrs:{"id":"basic_setup"}},[_c('h3',{staticClass:"show_text"},[_vm._v("Basic Setup")]),_vm._v(" "),_c('hr'),_vm._v(" "),_c('div',{staticClass:"item",on:{"click":function($event){_vm.checkThreshold();}}},[_c('span',{staticClass:"show_text"},[_vm._v("Threshold: ")]),_vm._v(" "),[_c('el-input-number',{attrs:{"step":_vm.factor},model:{value:(_vm.threshold),callback:function ($$v) {_vm.threshold=$$v},expression:"threshold"}})]],2),_vm._v(" "),_c('div',{staticClass:"item"},[_c('span',{staticClass:"show_text"},[_vm._v("Warning: ")]),_vm._v(" "),_c('label',{staticClass:"switch"},[_c('input',{attrs:{"type":"checkbox","checked":""},on:{"click":function($event){_vm.disableWarning();}}}),_vm._v(" "),_c('span',{staticClass:"slider round"})])]),_vm._v(" "),_c('div',{staticClass:"item"},[_c('span',{staticClass:"show_text"},[_vm._v("Trigger Mode: ")]),_vm._v(" "),_c('label',{staticClass:"switch"},[_c('input',{attrs:{"type":"checkbox"},on:{"click":function($event){_vm.switchMode();}}}),_vm._v(" "),_c('span',{staticClass:"slider round"})])])])])])])}
 var staticRenderFns = []
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
