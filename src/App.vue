@@ -1,7 +1,7 @@
 <template>
     <div id="app">
 
-      <div id="background">
+      <div id="background" class="disable-doubletap-to-zoom">
 
         <div id="container">
           <div id="bars_container">
@@ -15,7 +15,7 @@
             <div class="item">
                 <span class="show_text">Threshold: </span>
                   <template>
-                      <el-input-number v-model="threshold" :step="5" ></el-input-number>
+                      <el-input-number v-model="threshold" :step="5" min="10" max="100" ></el-input-number>
                   </template>
             </div>
             <div class="item">
@@ -87,6 +87,29 @@
                 } else {
                     console.log('getUserMedia not supported on your browser!');
                 }
+
+                // double click disable
+                var lastTouch = 0;
+                function preventZoom(e) {
+                    var t2 = e.timeStamp;
+                    var t1 = lastTouch || t2;
+                    var dt = t2 - t1;
+                    var fingers = e.touches.length;
+                    lastTouch = t2;
+
+                    if (!dt || dt >= 300 || fingers > 1) {
+                        return;
+                    }
+                    resetPreventZoom();
+                    e.preventDefault();
+                    e.target.click();
+                }
+                function resetPreventZoom() {
+                    lastTouch = 0;
+                }
+
+                document.addEventListener('touchstart', preventZoom, false);
+                document.addEventListener('touchmove', resetPreventZoom, false);
             },
             updateBars(volume) {
                 let time = (new Date()).getTime();
@@ -196,7 +219,7 @@
   }
 
   hr {
-    margin: 10px;
+    margin: 25px;
     border: 0;
     background-color: #eee;
     height: 1px;
@@ -266,6 +289,10 @@
 
   .slider.round:before {
       border-radius: 50%;
+  }
+
+  .disable-doubletap-to-zoom {
+      touch-action: none;
   }
 
 </style>
