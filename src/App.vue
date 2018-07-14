@@ -189,7 +189,8 @@
         background: linear-gradient(to top, rgba(0,168,255,1), #42b983);
         position: absolute;
         width: 100vw;
-
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
+        -webkit-tap-highlight-color: transparent;
     }
 
   #container {
