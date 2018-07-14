@@ -1,5 +1,7 @@
 # meeting-assistant
-
+  
+使用Chrome打开meeting.barryhe.com, 并选择同意(allow)调用microphone。
+  
 ***Volume bars***  
 白色的音量显示器，图像化音量大小。当音量超过警示音时，音量条会变成红色。
 
