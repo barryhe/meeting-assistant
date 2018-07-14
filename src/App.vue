@@ -55,7 +55,11 @@
 
                 startMadness: false,
                 madnessPrev: 0,
-                madnessMaxDuration: 1000, // 1s (roughly)
+                madnessMaxDuration: 1000, // 1s
+
+                startPeace: false,
+                peacePrev: 0,
+                peaceMaxDuration: 500, // 0.3s
 
                 beeper_switch: true,
             };
@@ -149,8 +153,17 @@
                     // two solutions:
                     // 1. beep after 0.3s of madness
                     // 2. beep if volume > threshold
-                    this.startMadness = false;
-                    this.stopBeeper();
+
+                    if (!this.startPeace) {
+                        this.startPeace = true;
+                        this.peacePrev = time;
+                    } else {
+                        if (time - this.peacePrev > this.peaceMaxDuration) {
+                            this.startPeace = false;
+                            this.startMadness = false;
+                            this.stopBeeper();
+                        }
+                    }
                 }
 
                 if (time - this.prev >= this.toWait) {
