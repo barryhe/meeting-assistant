@@ -1,31 +1,29 @@
 <template>
-            <div id="app">
+    <div id="app">
 
-              <div id="background">
+      <div id="background">
 
-                <div id="container">
-                  <div id="bars_container">
-                    <bar v-for="i in num" ref="bar"></bar>
-                  </div>
+        <div id="container">
+          <div id="bars_container">
+            <bar v-for="i in num" ref="bar"></bar>
+          </div>
 
-                  <div id="basic_setup">
-                    <h3>Basic Setup</h3>
-                    <hr>
+          <div id="basic_setup">
+            <h3 class="show_text">Basic Setup</h3>
+            <hr>
 
-                    <div class="item">
-                      <template>
-                        <span>Threshold: </span> <el-input-number v-model="threshold" :step="10" size="large"></el-input-number>
-                      </template>
-                    </div>
-                    <div class="item">
-                      <span>Beeper: </span>
-                      <el-switch v-model="beeper_switch"
-                              on-color="#13ce66"
-                              off-color="#ff4949"
-
-                      >
-
-            </el-switch>
+            <div class="item">
+                <span class="show_text">Threshold: </span>
+                  <template>
+                      <el-input-number v-model="threshold" :step="5" ></el-input-number>
+                  </template>
+            </div>
+            <div class="item">
+                <span class="show_text">Warning: </span>
+                <label class="switch">
+                    <input type="checkbox" checked v-on:click="disableWarning();">
+                    <span class="slider round"></span>
+                </label>
           </div>
         </div>
       </div>
@@ -37,12 +35,13 @@
 <script>
     import Vue from "vue";
     import Bar from "./bar.vue";
-    import element from 'element-ui';
     import volumeMeter from 'volume-meter';
     import getusermedia from 'getusermedia';
 
+    import Mint from 'mint-ui';
+
     export default {
-        components: {Bar, element, volumeMeter},
+        components: {Bar, Mint, volumeMeter},
         name: 'app',
         data () {
             return {
@@ -52,7 +51,7 @@
                 prev: 0,
                 toWait: 50, // milliseconds
 
-                beeper_switch: false,
+                beeper_switch: true,
             };
         },
         created: function () {
@@ -119,6 +118,9 @@
                     }
                 }
             },
+            disableWarning() {
+                console.log("here");
+            },
             reverseData() {
                 let x = this.mData.slice().reverse();
                 return x;
@@ -152,18 +154,27 @@
     position: absolute;
   }
 
-  #background {
-    background: linear-gradient(to top, rgba(0,168,255,1), #42b983);
-    position: absolute;
-    width: 100vw;
+  .show_text {
+      user-select: none;
+      -moz-user-select: none;
+      -khtml-user-select: none;
+      -webkit-user-select: none;
+      -o-user-select: none;
   }
 
+  #background {
+        background: linear-gradient(to top, rgba(0,168,255,1), #42b983);
+        position: absolute;
+        width: 100vw;
+
+    }
+
   #container {
-    width: 750px;
+    width: 850px;
     margin-left: auto;
     margin-right: auto;
-    margin-top: 50px;
-    margin-bottom: 100px;
+    margin-top: 150px;
+    margin-bottom: 200px;
     word-break: break-all;
 
     color: white;
@@ -179,7 +190,7 @@
   }
 
   #basic_setup h3 {
-    font-size: 60px;
+    font-size: 100px;
     text-align: center;
     margin-bottom: 10px;
   }
@@ -192,13 +203,69 @@
   }
 
   .item > span {
-    font-size: 30px;
-    vertical-align: middle;
-  }
-  .item {
-    margin: 30px auto;
-    width: 50%;
+      font-size: 60px;
   }
 
+  .item {
+    margin: 30px auto;
+    width: 100%;
+  }
+
+
+
+  /* sliders */
+  .switch {
+      position: relative;
+      display: inline-block;
+      width: 240px;
+      height: 68px;
+      top: 12px;
+  }
+
+  .switch input {display:none;}
+
+  .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ff4949;
+      -webkit-transition: .4s;
+      transition: .4s;
+  }
+
+  .slider:before {
+      position: absolute;
+      content: "";
+      height: 52px;
+      width: 52px;
+      left: 8px;
+      bottom: 8px;
+      background-color: white;
+      -webkit-transition: .2s;
+      transition: .2s;
+  }
+
+  input:checked + .slider {
+      background-color: #13ce66;
+  }
+
+
+  input:checked + .slider:before {
+      -webkit-transform: translateX(170px);
+      -ms-transform: translateX(170px);
+      transform: translateX(170px);
+  }
+
+  /* Rounded sliders */
+  .slider.round {
+      border-radius: 34px;
+  }
+
+  .slider.round:before {
+      border-radius: 50%;
+  }
 
 </style>
