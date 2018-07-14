@@ -19,8 +19,8 @@
       <file leaf-file-name="App.vue" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/App.vue">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="170">
-              <caret line="161" column="20" selection-start-line="161" selection-start-column="20" selection-end-line="184" selection-end-column="21" />
+            <state relative-caret-position="125">
+              <caret line="163" column="31" selection-start-line="163" selection-start-column="31" selection-end-line="163" selection-end-column="31" />
               <folding>
                 <element signature="e#1004#1026#0" expanded="true" />
               </folding>
@@ -86,9 +86,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>src</find>
-      <find>pi</find>
-      <find>vue</find>
       <find>element</find>
       <find>number</find>
       <find>large</find>
@@ -109,13 +106,16 @@
       <find>playbeeper</find>
       <find>updatebars</find>
       <find>haha</find>
-      <find>here</find>
       <find>this.beeper</find>
       <find>p</find>
       <find>get</find>
       <find>el-switch</find>
       <find>mint</find>
       <find>hh</find>
+      <find>isTriggermode</find>
+      <find>beepergain</find>
+      <find>beeperGain</find>
+      <find>here</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -153,8 +153,7 @@
     </packageJsonPaths>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="202" />
-    <option name="y" value="42" />
+    <option name="y" value="23" />
     <option name="width" value="1400" />
     <option name="height" value="823" />
   </component>
@@ -213,15 +212,15 @@
       <option name="presentableId" value="Default" />
       <updated>1530868867648</updated>
       <workItem from="1530868869841" duration="1368000" />
-      <workItem from="1531432484361" duration="30832000" />
+      <workItem from="1531432484361" duration="33304000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="32200000" />
+    <option name="totallyTimeSpent" value="34672000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="202" y="42" width="1400" height="823" extended-state="0" />
+    <frame x="0" y="23" width="1400" height="823" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25" />
@@ -380,8 +379,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/App.vue">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="161" column="20" selection-start-line="161" selection-start-column="20" selection-end-line="184" selection-end-column="21" />
+        <state relative-caret-position="125">
+          <caret line="163" column="31" selection-start-line="163" selection-start-column="31" selection-end-line="163" selection-end-column="31" />
           <folding>
             <element signature="e#1004#1026#0" expanded="true" />
           </folding>

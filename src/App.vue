@@ -29,7 +29,7 @@
             <div class="item">
               <span class="show_text">Trigger Mode: </span>
               <label class="switch">
-                  <input type="checkbox" checked v-on:click="switchMode();">
+                  <input type="checkbox" v-on:click="switchMode();">
                   <span class="slider round"></span>
               </label>
             </div>
@@ -54,12 +54,13 @@
             return {
                 num: 20,      // number of bars
                 factor: 5,
-                threshold: 50,
+                threshold: 35,
                 prev: 0,
                 toWait: 50, // milliseconds
                 min: 0,
                 max: 100,
                 beeper: null,
+                beeperGain: null,
 
                 /* trigger mode setup */
                 startMadness: false,
@@ -70,14 +71,14 @@
                 peacePrev: 0,
                 peaceMaxDuration: 1500, // ms
 
-                isTriggerMode: true,
+                isTriggerMode: false,
                 /* end of trigger mode */
 
                 // enable/disable beeper
                 beeper_switch: true,
 
                 // switch to polynomial mode
-                initial_poly_factor: 100,
+                smoothing_factor: 1000.0,
             };
         },
         created: function () {
@@ -90,7 +91,7 @@
             setup: function() {
                 this.prev = (new Date()).getTime();
 
-                /* start recording */
+                /* start mic setup */
                 var self = this;
                 if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
                     console.log('getUserMedia supported.');
@@ -106,6 +107,7 @@
                         var src = ctx.createMediaStreamSource(stream);
                         src.connect(meter);
                         src.connect(ctx.createGain());
+
 
                         stream.onended = function () {
                             meter.stop();
@@ -143,15 +145,16 @@
                 /* start of beeper setup */
                 window.AudioContext = window.AudioContext || window.webkitAudioContext;
                 var context = new AudioContext();
-                var analyser = context.createAnalyser();
+                // var analyser = context.createAnalyser();
                 var source;
+                self.beeperGain = context.createGain();
                 this.beeper = new Audio(this.pathGenerator());
                 this.beeper.controls = true;
                 this.beeper.loop = true;
 
                 source = context.createMediaElementSource(this.beeper);
-                source.connect(analyser);
-                analyser.connect(context.destination);
+                source.connect(self.beeperGain);
+                self.beeperGain.connect(context.destination);
                 /* end of beeper */
             },
             updateBars(volume) {
@@ -182,6 +185,18 @@
                                 this.stopBeeper();
                             }
                         }
+                    }
+                } else {
+                    // smooth mode
+                    if (volume > this.threshold) {
+                        let diff = volume - this.threshold;
+                        let newVal = Math.pow(diff, 1.3) / this.smoothing_factor;
+                        console.log(newVal);
+                        this.beeperGain.gain.value = newVal;
+                        // this.beeperGain.gain.setTargetAtTime(0.5, this.beeper.currentTime, 0);
+                        this.playBeeper();
+                    } else {
+                        this.stopBeeper();
                     }
                 }
 
