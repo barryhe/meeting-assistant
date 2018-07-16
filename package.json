@@ -11,8 +11,10 @@
   },
   "dependencies": {
     "@vue/cli-service": "^3.0.0-rc.4",
+    "caffeinejs": "0.0.3",
     "element-ui": "^1.4.13",
     "getusermedia": "^2.0.1",
+    "nosleep.js": "^0.7.0",
     "volume-meter": "^2.0.1",
     "vue": "^2.4.4",
     "vue-cli": "^2.9.6"

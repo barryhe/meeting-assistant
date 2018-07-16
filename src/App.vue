@@ -46,9 +46,10 @@
     import volumeMeter from 'volume-meter';
     import getusermedia from 'getusermedia';
     import element from 'element-ui';
+    import nosleep from 'nosleep.js';
 
     export default {
-        components: {Bar, element, volumeMeter},
+        components: {Bar, element, volumeMeter, nosleep},
         name: 'app',
         data () {
             return {
@@ -156,6 +157,10 @@
                 source.connect(self.beeperGain);
                 self.beeperGain.connect(context.destination);
                 /* end of beeper */
+
+                /* prevent auto sleeping */
+                nosleep.enable();
+                /* end of sleeping prevention */
             },
             updateBars(volume) {
                 let time = (new Date()).getTime();
@@ -191,7 +196,6 @@
                     if (volume > this.threshold) {
                         let diff = volume - this.threshold;
                         let newVal = Math.pow(diff, 1.3) / this.smoothing_factor;
-                        console.log(newVal);
                         this.beeperGain.gain.value = newVal;
                         // this.beeperGain.gain.setTargetAtTime(0.5, this.beeper.currentTime, 0);
                         this.playBeeper();
