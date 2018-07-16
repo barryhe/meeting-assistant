@@ -159,6 +159,8 @@
                 /* end of beeper */
 
                 /* prevent auto sleeping */
+
+                console.log("Enabled noSleep"); 
                 nosleep.enable();
                 /* end of sleeping prevention */
             },
