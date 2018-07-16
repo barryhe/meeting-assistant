@@ -46,10 +46,10 @@
     import volumeMeter from 'volume-meter';
     import getusermedia from 'getusermedia';
     import element from 'element-ui';
-    import nosleep from 'nosleep.js';
+    import NoSleep from 'nosleep.js';
 
     export default {
-        components: {Bar, element, volumeMeter, nosleep},
+        components: {Bar, element, volumeMeter, NoSleep},
         name: 'app',
         data () {
             return {
@@ -80,6 +80,9 @@
 
                 // switch to polynomial mode
                 smoothing_factor: 1000.0,
+
+                // no sleep
+                noSleep: new NoSleep(),
             };
         },
         created: function () {
@@ -161,7 +164,7 @@
                 /* prevent auto sleeping */
 
                 console.log("Enabled noSleep");
-                nosleep.enable();
+                this.noSleep.enable();
                 /* end of sleeping prevention */
             },
             updateBars(volume) {

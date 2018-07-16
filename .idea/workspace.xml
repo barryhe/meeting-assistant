@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="47dbab40-5881-4fb5-ba26-1da48d459254" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.vue" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -19,8 +20,8 @@
       <file leaf-file-name="App.vue" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/App.vue">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="162" column="48" selection-start-line="162" selection-start-column="48" selection-end-line="162" selection-end-column="48" />
+            <state relative-caret-position="180">
+              <caret line="164" lean-forward="true" selection-start-line="164" selection-end-line="164" />
               <folding>
                 <element signature="e#1299#1321#0" expanded="true" />
               </folding>
@@ -86,7 +87,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>number</find>
       <find>large</find>
       <find>input</find>
       <find>input-</find>
@@ -116,6 +116,7 @@
       <find>here</find>
       <find>setup</find>
       <find>console.l</find>
+      <find>nosleep</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -213,12 +214,12 @@
       <updated>1530868867648</updated>
       <workItem from="1530868869841" duration="1368000" />
       <workItem from="1531432484361" duration="33304000" />
-      <workItem from="1531769916412" duration="605000" />
+      <workItem from="1531769916412" duration="1218000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="35277000" />
+    <option name="totallyTimeSpent" value="35890000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1400" height="823" extended-state="0" />
@@ -426,8 +427,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/App.vue">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="162" column="48" selection-start-line="162" selection-start-column="48" selection-end-line="162" selection-end-column="48" />
+        <state relative-caret-position="180">
+          <caret line="164" lean-forward="true" selection-start-line="164" selection-end-line="164" />
           <folding>
             <element signature="e#1299#1321#0" expanded="true" />
           </folding>
